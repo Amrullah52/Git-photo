@@ -3,151 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Grid</title>
+    <title>The Cattery Corkboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        :root {
+            --cork-a: #7a5233;
+            --cork-b: #6a4529;
+            --cork-speck: rgba(0, 0, 0, 0.16);
+            --paper: #faf6ec;
+            --ink: #3c2a1e;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            padding: 30px;
+            font-family: 'Caveat', cursive;
             min-height: 100vh;
-            color: #fff;
+            padding: 56px 30px 80px;
+            background-color: var(--cork-a);
+            background-image:
+                radial-gradient(var(--cork-speck) 1.4px, transparent 1.6px),
+                radial-gradient(var(--cork-speck) 1px, transparent 1.2px),
+                linear-gradient(160deg, var(--cork-a), var(--cork-b));
+            background-size: 26px 26px, 17px 17px, 100% 100%;
+            background-position: 0 0, 9px 11px, 0 0;
         }
-        .container {
-            max-width: 1400px;
+
+        .board-frame {
+            max-width: 1300px;
             margin: 0 auto;
+            padding: 34px 40px 46px;
+            border-radius: 6px;
+            box-shadow:
+                inset 0 0 0 10px #4a3018,
+                inset 0 0 0 14px #2f1e0f,
+                0 20px 50px rgba(0, 0, 0, 0.45);
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .sign {
+            width: fit-content;
+            margin: 0 auto 50px;
+            padding: 10px 34px 16px;
+            background: linear-gradient(175deg, #efe2c6, #ddc99e);
+            border-radius: 3px;
+            transform: rotate(-1.5deg);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.4);
             position: relative;
         }
-        .card::before {
+
+        .sign::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
-            background-size: 400% 100%;
-            animation: shimmer 3s infinite;
+            top: -7px;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            margin-left: -7px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #eee, #888 70%, #444);
+            box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
         }
-        @keyframes shimmer {
-            0% { background-position: -400%; }
-            100% { background-position: 400%; }
-        }
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
-        }
-        .card img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.4s ease;
-        }
-        .card:hover img {
-            transform: scale(1.05);
-        }
-        .card-content {
-            padding: 20px;
-            text-align: center;
-        }
-        .card-content h3 {
-            font-size: 1.5rem;
-            color: #fff;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            margin-top: 10px;
+
+        .sign h1 {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            font-size: 2.6rem;
+            color: var(--ink);
+            text-align: center;
+            letter-spacing: 0.3px;
         }
-        @media (max-width: 1200px) {
-            .grid {
+
+        .sign p {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #6b5335;
+            margin-top: 2px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 46px 34px;
+        }
+
+        .polaroid {
+            --rot: 0deg;
+            background: var(--paper);
+            padding: 14px 14px 12px;
+            border-radius: 2px;
+            transform: rotate(var(--rot));
+            box-shadow:
+                0 14px 22px rgba(0, 0, 0, 0.38),
+                0 3px 6px rgba(0, 0, 0, 0.25);
+            position: relative;
+            opacity: 0;
+            animation: pin-drop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) translateY(-8px) scale(1.035);
+            box-shadow:
+                0 26px 34px rgba(0, 0, 0, 0.45),
+                0 6px 10px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+
+        .polaroid:nth-child(1) { --rot: -4deg; animation-delay: 0.05s; }
+        .polaroid:nth-child(2) { --rot: 3deg;  animation-delay: 0.15s; }
+        .polaroid:nth-child(3) { --rot: -2deg; animation-delay: 0.25s; }
+        .polaroid:nth-child(4) { --rot: 2deg;  animation-delay: 0.35s; }
+        .polaroid:nth-child(5) { --rot: -3deg; animation-delay: 0.45s; }
+        .polaroid:nth-child(6) { --rot: 4deg;  animation-delay: 0.55s; }
+        .polaroid:nth-child(7) { --rot: -2deg; animation-delay: 0.65s; }
+        .polaroid:nth-child(8) { --rot: 3deg;  animation-delay: 0.75s; }
+        .polaroid:nth-child(9) { --rot: -3deg; animation-delay: 0.85s; }
+
+        @keyframes pin-drop {
+            from {
+                opacity: 0;
+                transform: rotate(var(--rot)) translateY(-46px) scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(var(--rot)) translateY(0) scale(1);
+            }
+        }
+
+        .tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            width: 92px;
+            height: 30px;
+            margin-left: -46px;
+            transform: rotate(-3deg);
+            opacity: 0.85;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+        }
+
+        .img-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .caption {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .caption h3 {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 1.7rem;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        /* Per-breed theming: tape color + photo letterbox tint, drawn from the cat's real coat coloring */
+        .persian .tape        { background: #e8d9c0; }
+        .persian .img-wrap    { background: linear-gradient(160deg, #fdf6ec, #e8d9c0); }
+
+        .siamese .tape         { background: #c9ac86; }
+        .siamese .img-wrap    { background: linear-gradient(160deg, #e9dcc9, #8a6b4f); }
+
+        .mainecoon .tape       { background: #c98a4a; }
+        .mainecoon .img-wrap  { background: linear-gradient(160deg, #d9a15c, #7a4a24); }
+
+        .bengal .tape          { background: #d99a3d; }
+        .bengal .img-wrap     { background: linear-gradient(160deg, #e8b95c, #a5651e); }
+
+        .ragdoll .tape         { background: #b9c8d6; }
+        .ragdoll .img-wrap    { background: linear-gradient(160deg, #eef2f5, #9fb3c8); }
+
+        .sphynx .tape          { background: #d9a888; }
+        .sphynx .img-wrap     { background: linear-gradient(160deg, #f2c9b0, #cf9a7a); }
+
+        .scottishfold .tape    { background: #a3a7ae; }
+        .scottishfold .img-wrap { background: linear-gradient(160deg, #c9ccd1, #6e727a); }
+
+        .britishshort .tape    { background: #8a97a6; }
+        .britishshort .img-wrap { background: linear-gradient(160deg, #b7c1cc, #5f6c7a); }
+
+        .abyssinian .tape      { background: #c97a3e; }
+        .abyssinian .img-wrap { background: linear-gradient(160deg, #d98a4a, #8f4a1e); }
+
+        @media (max-width: 1100px) {
+            .board {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        @media (max-width: 768px) {
-            .grid {
+        @media (max-width: 640px) {
+            .board {
                 grid-template-columns: 1fr;
             }
-            .card img {
-                height: 350px;
+            .board-frame {
+                padding: 26px 20px 34px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .polaroid {
+                animation: none;
+                opacity: 1;
+                transition: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="grid">
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Fluffy%20Persian" alt="Fluffy Persian">
-                <div class="card-content">
-                    <h3>Fluffy Persian</h3>
+    <div class="board-frame">
+        <div class="sign">
+            <h1>The Cattery Corkboard</h1>
+            <p>nine breeds, permanently pinned</p>
+        </div>
+
+        <div class="board">
+            <div class="polaroid persian">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUydmsybDRtdjVsYWtoZ3BoMTZqOW81YnNrZDNxaGVhengzdjFoazc4MiZlcD12MV92aWRlb3Nfc2VhcmNoJmN0PXY/paWQwjlM2mKKGa2vsR/giphy-downsized-large.gif" alt="Fluffy Persian">
                 </div>
+                <div class="caption"><h3>Fluffy Persian</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Siamese%20Beauty" alt="Siamese Beauty">
-                <div class="card-content">
-                    <h3>Siamese Beauty</h3>
+
+            <div class="polaroid siamese">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/D28Smnu0gbAAAAAM/huh-cat-huh.gif" alt="Siamese Beauty">
                 </div>
+                <div class="caption"><h3>Siamese Beauty</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Maine%20Coon%20Giant" alt="Maine Coon Giant">
-                <div class="card-content">
-                    <h3>Maine Coon Giant</h3>
+
+            <div class="polaroid mainecoon">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/D0ylzJZ4T-IAAAAM/cat-maine-coon.gif" alt="Maine Coon Giant">
                 </div>
+                <div class="caption"><h3>Maine Coon Giant</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Bengal%20Spots" alt="Bengal Spots">
-                <div class="card-content">
-                    <h3>Bengal Spots</h3>
+
+            <div class="polaroid bengal">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/Tms5ibYjV3kAAAAM/herehuss-husshere.gif" alt="Bengal Spots">
                 </div>
+                <div class="caption"><h3>Bengal Spots</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Ragdoll%20Relax" alt="Ragdoll Relax">
-                <div class="card-content">
-                    <h3>Ragdoll Relax</h3>
+
+            <div class="polaroid ragdoll">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/UQ5tcx9a9roAAAAM/cat-funny.gif" alt="Ragdoll Relax">
                 </div>
+                <div class="caption"><h3>Ragdoll Relax</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Sphynx%20Unique" alt="Sphynx Unique">
-                <div class="card-content">
-                    <h3>Sphynx Unique</h3>
+
+            <div class="polaroid sphynx">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://i.pinimg.com/originals/30/d1/99/30d19988a04b85f95bfcdad57f48edb0.gif" alt="Sphynx Unique">
                 </div>
+                <div class="caption"><h3>Sphynx Unique</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Scottish%20Fold" alt="Scottish Fold">
-                <div class="card-content">
-                    <h3>Scottish Fold</h3>
+
+            <div class="polaroid scottishfold">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/Fgbg1DDH4m8AAAAM/cat-sleepy.gif" alt="Scottish Fold">
                 </div>
+                <div class="caption"><h3>Scottish Fold</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/British%20Shorthair" alt="British Shorthair">
-                <div class="card-content">
-                    <h3>British Shorthair</h3>
+
+            <div class="polaroid britishshort">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://media.tenor.com/84Zskif7TGsAAAAM/british-shorthair-oklou-cat.gif" alt="British Shorthair">
                 </div>
+                <div class="caption"><h3>British Shorthair</h3></div>
             </div>
-            <div class="card">
-                <img src="https://cataas.com/cat/cute/says/Abyssinian" alt="Abyssinian">
-                <div class="card-content">
-                    <h3>Abyssinian</h3>
+
+            <div class="polaroid abyssinian">
+                <div class="tape"></div>
+                <div class="img-wrap">
+                    <img src="https://i.imgur.com/y05I7CY.gif" alt="Abyssinian">
                 </div>
+                <div class="caption"><h3>Abyssinian</h3></div>
             </div>
         </div>
     </div>
