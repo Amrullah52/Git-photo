@@ -20,9 +20,9 @@
             --plate-a: #f1f3f5;
             --plate-b: #ccd2d8;
             --ink: #20242b;
-            --sports: #d1495b;
-            --classic: #c9962c;
-            --electric: #2aa9c9;
+            --red: #d1495b;
+            --blue: #2f8fd1;
+            --green: #3fa66b;
         }
 
         body {
@@ -36,7 +36,7 @@
         }
 
         .hero {
-            padding: 70px 30px 50px;
+            padding: 70px 30px 30px;
             text-align: center;
         }
 
@@ -53,7 +53,7 @@
             margin-top: 10px;
             color: #9199a3;
             font-size: 1.05rem;
-            max-width: 480px;
+            max-width: 520px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -61,7 +61,7 @@
         .lane-divider {
             height: 2px;
             max-width: 1200px;
-            margin: 0 auto 60px;
+            margin: 40px auto 60px;
             background-image: repeating-linear-gradient(90deg, #52585f 0 34px, transparent 34px 60px);
             opacity: 0.6;
         }
@@ -83,6 +83,11 @@
             flex: 1;
             height: 6px;
             border-radius: 2px;
+            background: linear-gradient(90deg, #6b7078, rgba(0,0,0,0));
+        }
+
+        .lane-header .stripe.right {
+            background: linear-gradient(90deg, rgba(0,0,0,0), #6b7078);
         }
 
         .lane-header h2 {
@@ -92,15 +97,6 @@
             color: #eef0f2;
             white-space: nowrap;
         }
-
-        .sports .stripe { background: linear-gradient(90deg, var(--sports), rgba(209,73,91,0)); }
-        .sports .stripe.right { background: linear-gradient(90deg, rgba(209,73,91,0), var(--sports)); }
-
-        .classic .stripe { background: linear-gradient(90deg, var(--classic), rgba(201,150,44,0)); }
-        .classic .stripe.right { background: linear-gradient(90deg, rgba(201,150,44,0), var(--classic)); }
-
-        .electric .stripe { background: linear-gradient(90deg, var(--electric), rgba(42,169,201,0)); }
-        .electric .stripe.right { background: linear-gradient(90deg, rgba(42,169,201,0), var(--electric)); }
 
         .row {
             display: grid;
@@ -113,47 +109,73 @@
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-        }
-
-        .sports .card:hover { box-shadow: 0 16px 30px rgba(209, 73, 91, 0.35); }
-        .classic .card:hover { box-shadow: 0 16px 30px rgba(201, 150, 44, 0.35); }
-        .electric .card:hover { box-shadow: 0 16px 30px rgba(42, 169, 201, 0.35); }
+        .card:hover { transform: translateY(-6px); }
 
         .photo {
             width: 100%;
             aspect-ratio: 4 / 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
+            background: #14171a;
         }
 
-        .sports .photo { background: linear-gradient(160deg, #3a1b20, #7a2534); }
-        .classic .photo { background: linear-gradient(160deg, #3a2f16, #7a5f22); }
-        .electric .photo { background: linear-gradient(160deg, #123138, #1f5f6c); }
-
-        .card img {
+        .photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
 
-        .plate {
+        /* Per-photo color bar: three small swatches plus a live label,
+           scoped to just the one picture above it */
+        .color-bar {
             display: flex;
             align-items: center;
+            gap: 8px;
+            padding: 10px 14px 0;
+        }
+
+        .mini-swatch {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .mini-swatch:hover { transform: translateY(-1px); }
+        .mini-swatch.active { border-color: var(--ink); }
+
+        .mini-swatch[data-color="red"] { background: var(--red); }
+        .mini-swatch[data-color="blue"] { background: var(--blue); }
+        .mini-swatch[data-color="green"] { background: var(--green); }
+
+        .color-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.4px;
+            color: #5a6270;
+            margin-left: auto;
+        }
+
+        .plate {
+            display: flex;
+            align-items: flex-start;
             gap: 10px;
-            padding: 12px 14px;
+            padding: 12px 14px 16px;
+            flex: 1;
         }
 
         .bolt {
             width: 9px;
             height: 9px;
+            margin-top: 6px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #fff, #8a9099 70%, #565c64);
             box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
@@ -161,41 +183,35 @@
         }
 
         .plate .label {
-            font-family: 'Oswald', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
-            font-size: 1rem;
-            letter-spacing: 0.3px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            letter-spacing: 0.1px;
             color: var(--ink);
-            text-align: center;
+            text-align: left;
             flex: 1;
         }
 
         @media (max-width: 900px) {
-            .row {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .row { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
-            .row {
-                grid-template-columns: 1fr;
-            }
-            .hero h1 {
-                font-size: 2.4rem;
-            }
-            .lane-header h2 {
-                font-size: 1.3rem;
-            }
+            .row { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.4rem; }
+            .lane-header h2 { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
     <div class="hero">
         <h1>Three Lanes</h1>
-        <p>Sports, classic, and electric — nine cars, three ways of getting where you're going.</p>
+        <p>Sports, classic, and electric — nine cars, three ways of getting where you're going. Each photo has its own color bar underneath it, so you can switch that one car's color without touching the rest.</p>
     </div>
 
     <div class="lane-divider"></div>
 
+    <!-- SPORTS -->
     <div class="lane sports">
         <div class="lane-header">
             <span class="stripe"></span>
@@ -203,39 +219,77 @@
             <span class="stripe right"></span>
         </div>
         <div class="row">
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://images.pexels.com/photos/21230626/pexels-photo-21230626/free-photo-of-black-and-white-photography-of-a-sports-car.jpeg?cs=tinysrgb&dpr=1&w=500" alt="Red sports car on a forest road">
+                    <img class="color-photo"
+                         src="https://hips.hearstapps.com/autoweek/assets/luxuryandexpensive_koenigsegg_jesko_26_0.jpg"
+                         data-red="https://hips.hearstapps.com/autoweek/assets/luxuryandexpensive_koenigsegg_jesko_26_0.jpg"
+                         data-blue="https://cdn11.bigcommerce.com/s-yrkef1j7/images/stencil/1280x1280/products/59258/265701/_20251107085558_1583_26__33307.1762526479.jpg?c=2"
+                         data-green="https://www.anmodelcars.com/64231-product_main/koenigsegg-jesko-manz-green-118-frontiart.jpg"
+                         alt="Koenigsegg Jesko sports car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Red, low, and fast</span>
+                    <span class="label">A Koenigsegg Jesko, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://i.pinimg.com/736x/47/dc/fb/47dcfbcd1cf20211adadfdae85fa32be.jpg" alt="Race car on a track">
+                    <img class="color-photo"
+                         src="https://hips.hearstapps.com/hmg-prod/images/2021-lamborghini-aventador-mmp-1-1601499002.jpg?crop=0.897xw:0.757xh;0.0753xw,0.173xh&resize=2048:*"
+                         data-red="https://hips.hearstapps.com/hmg-prod/images/2021-lamborghini-aventador-mmp-1-1601499002.jpg?crop=0.897xw:0.757xh;0.0753xw,0.173xh&resize=2048:*"
+                         data-blue="https://cdn.rmsothebys.com/9/6/f/e/e/a/96feea05d0e1c9e8c17972d8b0f49517dd43a324.webp"
+                         data-green="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtcGe7JRaI7MEPmbzKM7bN9USEpbuvazK0xn9h3Z8oPl-k13lLzBz6S3tG&s=10"
+                         alt="Lamborghini Aventador sports car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Built for the track</span>
+                    <span class="label">A Lamborghini Aventador, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu8U8XCzIk2MFybbyGQZRJ9q-VNkOgVT4jEv2SyGL3INjbROlq_Xjgfu4&s=10" alt="Sports car at speed">
+                    <img class="color-photo"
+                         src="https://static0.topspeedimages.com/wordpress/wp-content/uploads/2022/10/23be5038-67f1-48ce-9fba-039311f3a3c5.jpeg?w=1200&h=675&fit=crop"
+                         data-red="https://static0.topspeedimages.com/wordpress/wp-content/uploads/2022/10/23be5038-67f1-48ce-9fba-039311f3a3c5.jpeg?w=1200&h=675&fit=crop"
+                         data-blue="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRURHL91JS9SMF1RAWAPrrlkYp6deSTp2rYmA9cJQdt53mzkM2XuVU4Oo33&s=10"
+                         data-green="https://cimg9.ibsrv.net/gimg/www.corvetteforum.com-vbulletin/2000x1333/pexels_mike_bird_6010581_3e6f57bec01d9eacc3c7d304da01a2f9865be1d7.jpg"
+                         alt="Sports car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Every curve, a reason</span>
+                    <span class="label">A Ferrari LaFerrari, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
         </div>
     </div>
 
+    <!-- CLASSIC -->
     <div class="lane classic">
         <div class="lane-header">
             <span class="stripe"></span>
@@ -243,39 +297,77 @@
             <span class="stripe right"></span>
         </div>
         <div class="row">
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://images.stockcake.com/public/0/2/a/02a2dd58-11b1-43d8-a8a9-ba82018a4a75_medium/vintage-red-car-stockcake.jpg" alt="Classic red vintage convertible, front view">
+                    <img class="color-photo"
+                         src="https://photos.classiccars.com/cc-temp/listing/138/6408/22915102-1947-buick-super-thumb.jpg"
+                         data-red="https://photos.classiccars.com/cc-temp/listing/138/6408/22915102-1947-buick-super-thumb.jpg"
+                         data-blue="https://thumbs.dreamstime.com/b/buick-super-classic-car-blue-dr-sedan-american-45989959.jpg"
+                         data-green="https://www.vicariauction.com/car_images/inventory/23944/23944_01.jpg"
+                         alt="1947 Buick Super classic car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Chrome that still shines</span>
+                    <span class="label">A 1947 Buick Super, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://patrickreedphotography.com/wp-content/uploads/2026/05/Stahls-Classic-Car-Show-13.jpg" alt="Vintage red convertible on a sunlit street">
+                    <img class="color-photo"
+                         src="https://cars.usnews.com/images/article/201609/126017/8_volvo_p1800.jpg"
+                         data-red="https://cars.usnews.com/images/article/201609/126017/8_volvo_p1800.jpg"
+                         data-blue="https://coolmaterial.com/wp-content/uploads/2020/09/Volvo-P1800-Cyan-2.jpg"
+                         data-green="https://cdn.dealeraccelerate.com/primo/1/668/56970/790x1024/1969-volvo-p1800"
+                         alt="Volvo P1800 classic car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">A Sunday-drive car</span>
+                    <span class="label">A Volvo P1800, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://i.etsystatic.com/26696014/r/il/3f9db3/3662621521/il_fullxfull.3662621521_5vcd.jpg" alt="Vintage oldtimer car">
+                    <img class="color-photo"
+                         src="https://www.beverlyhillscarclub.com/galleria_images/17270/17270_p45_l.jpg"
+                         data-red="https://www.beverlyhillscarclub.com/galleria_images/17270/17270_p45_l.jpg"
+                         data-blue="https://www.beverlyhillscarclub.com/galleria_images/15376/15376_p36_l.jpg"
+                         data-green="https://route66auctions.b-cdn.net/wp-content/uploads/2025/07/ford-mustang-1966-f4955-040-scaled.jpg"
+                         alt="Classic car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Older than most of us</span>
+                    <span class="label">A 1966 Ford Mustang Convertible., switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
         </div>
     </div>
 
+    <!-- ELECTRIC -->
     <div class="lane electric">
         <div class="lane-header">
             <span class="stripe"></span>
@@ -283,37 +375,94 @@
             <span class="stripe right"></span>
         </div>
         <div class="row">
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://media.wired.com/photos/6a14b4e9be8e06a7214bd4ae/1:1/w_3375,h_3375,c_limit/Luce_30rtv4_lightson_6000x3375.jpg" alt="Electric car plugged into a charging station">
+                    <img class="color-photo"
+                         src="https://hips.hearstapps.com/hmg-prod/images/23-jpg-1664909170.jpg?crop=0.668xw:1.00xh;0.212xw,0&resize=1200:*"
+                         data-red="https://hips.hearstapps.com/hmg-prod/images/23-jpg-1664909170.jpg?crop=0.668xw:1.00xh;0.212xw,0&resize=1200:*"
+                         data-blue="https://st.arenaev.com/news/23/08/hyundai-ioniq-6-review/-1242x621/arenaev_001.jpg"
+                         data-green="https://hips.hearstapps.com/hmg-prod/images/img-7578-jpg-1664911623.jpg"
+                         alt="Hyundai Ioniq 6 electric car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Plugged in, powering up</span>
+                    <span class="label">A Hyundai Ioniq 6, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://cdn.arstechnica.net/wp-content/uploads/2026/05/Luce_22rtv3_lightsOn_6000x3375.jpg" alt="White electric car charging on a city street">
+                    <img class="color-photo"
+                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx7P0N9IywDusM5NCeg4Oo1dexuUP6eDvFCtveVdvFNKz446rt_g9PFaKk&s=10"
+                         data-red="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx7P0N9IywDusM5NCeg4Oo1dexuUP6eDvFCtveVdvFNKz446rt_g9PFaKk&s=10"
+                         data-blue="https://vehicle-images.carscommerce.inc/d88d-11002340/5XYRKDJFXSG316787/thumbnails/large/ef8c6b4d4097a76152bee88823daf11b.webp"
+                         data-green="https://assets.nexuspointapex.co.uk/tenant_0cbbbf5f-9a8f-413f-aedf-4fc558d52885/media/uploads/sportage-lifestyle-36.jpg"
+                         alt="Electric car">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">Quiet on the street</span>
+                    <span class="label">A Kia EV3, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
             <div class="card">
                 <div class="photo">
-                    <img src="https://cdn.motor1.com/images/mgl/2N4ylM/s1/ferrari-luce-configurator.jpg" alt="Tesla charging at a station">
+                    <img class="color-photo"
+                         src="https://hips.hearstapps.com/hmg-prod/images/ferrari-e-suv-2-copy-680287cac36b2.jpg?crop=1.00xw:0.773xh;0,0.102xh&resize=640:*"
+                         data-red="https://hips.hearstapps.com/hmg-prod/images/ferrari-e-suv-2-copy-680287cac36b2.jpg?crop=1.00xw:0.773xh;0,0.102xh&resize=640:*"
+                         data-blue="https://imagesdl.dealercenter.net/2400/1344/202606-3e0ecb30def144e3a7773ae1e4d0d15f.jpg"
+                         data-green="https://static.cargurus.com/images/forsale/2026/09/11/17/28/2026_ferrari_purosangue-pic-7467221390743645128-1024x768.jpeg?io=true&width=640&height=480&dpr=2&fit=bounds&format=jpg&auto=webp"
+                         alt="Ferrari electric SUV">
+                </div>
+                <div class="color-bar">
+                    <button class="mini-swatch active" data-color="red" aria-label="Show red"></button>
+                    <button class="mini-swatch" data-color="blue" aria-label="Show blue"></button>
+                    <button class="mini-swatch" data-color="green" aria-label="Show green"></button>
+                    <span class="color-label">Red</span>
                 </div>
                 <div class="plate">
                     <span class="bolt"></span>
-                    <span class="label">No gas station in sight</span>
+                    <span class="label">A Ferrari electric SUV, switchable between red, blue, and green.</span>
                     <span class="bolt"></span>
                 </div>
             </div>
+
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.card').forEach(card => {
+            const img = card.querySelector('.color-photo');
+            const label = card.querySelector('.color-label');
+            const buttons = card.querySelectorAll('.mini-swatch');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const color = btn.getAttribute('data-color');
+                    const newSrc = img.getAttribute('data-' + color);
+                    if (newSrc) img.src = newSrc;
+
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    label.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
